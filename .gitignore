@@ -1,9 +1,4 @@
-# Dependencies
-.psci_modules
-.spago
-bower_components
 node_modules
+.serverless
+.env
 
-# Generated files
-.psci
-output
