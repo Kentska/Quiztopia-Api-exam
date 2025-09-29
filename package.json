@@ -1,9 +1,11 @@
 {
   "name": "quiztopia-api-exam",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Serverless quiz API with AWS Lambda, Middy, JWT, and DynamoDB",
+  "main": "src/functions/index.js",
   "scripts": {
+	"start": "sls offline",
+    "deploy": "sls deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
