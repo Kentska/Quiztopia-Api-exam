@@ -1,0 +1,112 @@
+service: quiztopia-api-exam
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-north-1
+  profile: kentjs24
+
+  environment:
+    JWT_SECRET: ${env:JWT_SECRET}
+    DYNAMODB_TABLE: QuiztopiaUsers
+    QUIZ_TABLE: QuiztopiaQuizzes
+    RESULT_TABLE: QuiztopiaResults
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:CreateFunction
+        - lambda:UpdateFunctionCode
+        - lambda:UpdateFunctionConfiguration
+        - lambda:DeleteFunction
+      Resource: "arn:aws:lambda:eu-north-1:187296254059:function:quiztopia-*"
+
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - apigateway:GET
+        - apigateway:POST
+        - apigateway:PUT
+        - apigateway:DELETE
+        - apigateway:PATCH
+      Resource: "*"
+
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:Query
+        - dynamodb:Scan
+      Resource: "arn:aws:dynamodb:eu-north-1:187296254059:table/Quiztopia*"
+functions:
+  login:
+    handler: src/functions/auth/login.main
+    events:
+      - http:
+          path: auth/login
+          method: post
+
+  register:
+    handler: src/functions/auth/register.main
+    events:
+      - http:
+          path: auth/register
+          method: post
+
+  leaderboard:
+    handler: src/functions/scores/leaderboard.main
+    events:
+      - http:
+          path: leaderboard
+          method: get
+
+  submitResult:
+    handler: src/functions/scores/submit.main
+    events:
+      - http:
+          path: result
+          method: post
+resources:
+  Resources:
+    QuiztopiaUsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: QuiztopiaUsers
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    QuiztopiaQuizzesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: QuiztopiaQuizzes
+        AttributeDefinitions:
+          - AttributeName: quizId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: quizId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    QuiztopiaResultsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: QuiztopiaResults
+        AttributeDefinitions:
+          - AttributeName: resultId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: resultId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
