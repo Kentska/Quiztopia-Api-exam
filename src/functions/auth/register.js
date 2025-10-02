@@ -1,6 +1,7 @@
 const { DynamoDBClient, PutItemCommand } = require ('@aws-sdk/client-dynamodb')
-const middy = reguire ('@middy/core')
+const middy = require ('@middy/core')
 const jsonBodyParser = require ('@middy/http-json-body-parser')
+const httpErrorHandler = require('@middy/http-error-handler')
 const { v4: uuidv4 } = require ('uuid')
 const bcrypt = require ('bcryptjs')
 
