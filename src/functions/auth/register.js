@@ -44,6 +44,6 @@ const registerHandler = async (event) => {
   }
 }
 
-module.exports.handler = middy(registerHandler)
+module.exports.main = middy(registerHandler)
   .use(jsonBodyParser())
   .use(httpErrorHandler())
