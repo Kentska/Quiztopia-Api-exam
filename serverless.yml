@@ -50,6 +50,18 @@ plugins:
   - serverless-dotenv-plugin
   
 functions:
+  submitResult:
+    handler: src/functions/scores/submit.main
+    events:
+      - http:
+          path: scores/submit
+          method: post
+          cors: true
+      - http:
+          path: result
+          method: post
+          cors: true
+
   login:
     handler: src/functions/auth/login.main
     events:
@@ -71,12 +83,46 @@ functions:
           path: leaderboard
           method: get
 
-  submitResult:
-    handler: src/functions/scores/submit.main
+  createQuiz:
+    handler: src/functions/quizzes/create.main
     events:
       - http:
-          path: result
+          path: quizzes/create
           method: post
+          cors: true
+
+  getAllQuizzes:
+    handler: src/functions/quizzes/getAll.main
+    events:
+      - http:
+          path: quizzes
+          method: get
+          cors: true
+
+  getOneQuiz:
+    handler: src/functions/quizzes/getOne.main
+    events:
+      - http:
+          path: quizzes/{quizId}
+          method: get
+          cors: true
+
+  deleteQuiz:
+    handler: src/functions/quizzes/delete.main
+    events:
+      - http:
+          path: quizzes/{quizId}
+          method: delete
+          cors: true
+
+  addQuestion:
+    handler: src/functions/quizzes/addQuestion.main
+    events:
+      - http:
+          path: quizzes/{quizId}/questions
+          method: post
+          cors: true
+
 resources:
   Resources:
     QuiztopiaUsersTable:
@@ -110,7 +156,16 @@ resources:
         AttributeDefinitions:
           - AttributeName: resultId
             AttributeType: S
+          - AttributeName: quizId
+            AttributeType: S
         KeySchema:
           - AttributeName: resultId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: quizId-index
+            KeySchema:
+              - AttributeName: quizId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
