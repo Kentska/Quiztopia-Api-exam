@@ -1,40 +1,52 @@
-const { DynamoDBClient, PutItemCommand } = require('@aws-sdk/client-dynamodb')
+const AWS = require('aws-sdk')
+const { v4: uuidv4 } = require('uuid') // ✅ CommonJS-kompatibel
 const middy = require('@middy/core')
+const httpErrorHandler = require('@middy/http-error-handler')
 const jsonBodyParser = require('@middy/http-json-body-parser')
-const verifyToken = require('../../middleware/verifyToken')
-const { v4: uuidv4 } = require('uuid')
 
-const client = new DynamoDBClient({})
+const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
 const createQuiz = async (event) => {
-  const { title } = event.body
-  const ownerId = event.user.username
+  try {
+    console.log('Incoming event:', JSON.stringify(event))
 
-  if (!title) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: 'Quiz title is required' }),
+    const { title } = event.body
+    const username = event.user?.username
+
+    if (!title || !username) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: 'Missing title or user' }),
+      }
     }
-  }
 
-  const command = new PutItemCommand({
-    TableName: process.env.QUIZ_TABLE,
-    Item: {
-      quizId: { S: uuidv4() },
-      title: { S: title },
-      ownerId: { S: ownerId },
-      type: { S: 'quiz' } // 👈 Detta gör att du kan querya via GSI:n
-    },
-  })
+    const quizId = uuidv4()
+    const params = {
+      TableName: process.env.QUIZZES_TABLE,
+      Item: {
+        quizId,
+        title,
+        ownerId: username,
+        type: 'quiz', // ✅ krävs för GSI
+      },
+    }
 
-  await client.send(command)
+    await dynamoDb.put(params).promise()
 
-  return {
-    statusCode: 201,
-    body: JSON.stringify({ message: 'Quiz created successfully' }),
+    return {
+      statusCode: 201,
+      body: JSON.stringify({ message: 'Quiz created', quizId }),
+    }
+  } catch (err) {
+    console.error('CreateQuiz error:', err)
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Internal server error', error: err.message }),
+    }
   }
 }
 
-module.exports.main = middy(createQuiz)
+module.exports.handler = middy(createQuiz)
   .use(jsonBodyParser())
-  .use(verifyToken())
+  .use(httpErrorHandler())
+

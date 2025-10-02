@@ -1,8 +1,8 @@
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb'
-import middy from '@middy/core'
-import jsonBodyParser from '@middy/http-json-body-parser'
-import { v4 as uuidv4 } from 'uuid'
-import bcrypt from 'bcryptjs'
+const { DynamoDBClient, PutItemCommand } = require ('@aws-sdk/client-dynamodb')
+const middy = reguire ('@middy/core')
+const jsonBodyParser = require ('@middy/http-json-body-parser')
+const { v4: uuidv4 } = require ('uuid')
+const bcrypt = require ('bcryptjs')
 
 const client = new DynamoDBClient({})
 
@@ -43,4 +43,6 @@ const registerHandler = async (event) => {
   }
 }
 
-export const main = middy(registerHandler).use(jsonBodyParser())
+module.exports.handler = middy(register)
+  .use(jsonBodyParser())
+  .use(httpErrorHandler())
