@@ -28,5 +28,8 @@
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^6.0.0"
   }
 }
