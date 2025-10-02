@@ -1,8 +1,8 @@
-import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb'
-import middy from '@middy/core'
-import jsonBodyParser from '@middy/http-json-body-parser'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
+const { DynamoDBClient, GetItemCommand } = require ('@aws-sdk/client-dynamodb')
+const middy = require ('@middy/core')
+const jsonBodyParser = require ('@middy/http-json-body-parser')
+const jwt = require ('jsonwebtoken')
+const bcrypt = require ('bcryptjs')
 
 const client = new DynamoDBClient({})
 
@@ -61,4 +61,6 @@ const loginHandler = async (event) => {
   }
 }
 
-export const main = middy(loginHandler).use(jsonBodyParser())
+module.exports.main = middy(loginHandler)
+  .use(jsonBodyParser())
+  .use(httpErrorHandler())
