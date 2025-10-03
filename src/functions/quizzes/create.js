@@ -26,8 +26,8 @@ const createQuiz = async (event) => {
       if (
         !q.question ||
         !q.answer ||
-        typeof q.coordinates?.lat !== 'number' ||
-        typeof q.coordinates?.lng !== 'number'
+        typeof q.latitude !== 'number' ||
+        typeof q.longitude !== 'number'
       ) {
         return {
           statusCode: 400,
@@ -35,6 +35,7 @@ const createQuiz = async (event) => {
         }
       }
     }
+	
 
     const quizId = uuidv4()
     const params = {
