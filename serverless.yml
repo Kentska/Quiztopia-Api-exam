@@ -11,7 +11,9 @@ provider:
     QUIZ_TABLE: QuiztopiaQuizzes
     RESULT_TABLE: QuiztopiaResults
 
-iamRoleStatements:
+iam:
+  role:
+    statements:
     - Effect: Allow
       Action:
         - lambda:InvokeFunction
