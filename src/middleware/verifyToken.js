@@ -14,7 +14,10 @@ const verifyToken = () => {
 
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        request.event.user = decoded // ✅ Lägg till användaren i eventet
+		request.event.requestContext = request.event.requestContext || {}
+request.event.requestContext.authorizer = {
+  username: decoded.username
+}
       } catch (err) {
         throw new Error('Unauthorized: Invalid token')
       }
