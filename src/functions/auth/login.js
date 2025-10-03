@@ -1,6 +1,7 @@
 const { DynamoDBClient, GetItemCommand } = require ('@aws-sdk/client-dynamodb')
 const middy = require ('@middy/core')
 const jsonBodyParser = require ('@middy/http-json-body-parser')
+const httpErrorHandler = require('@middy/http-error-handler')
 const jwt = require ('jsonwebtoken')
 const bcrypt = require ('bcryptjs')
 
