@@ -41,9 +41,7 @@ provider:
       Action:
         - dynamodb:PutItem
         - dynamodb:GetItem
-        - dynamodb:UpdateItem
         - dynamodb:Query
-        - dynamodb:Scan
       Resource: "arn:aws:dynamodb:eu-north-1:187296254059:table/Quiztopia*"
 
 plugins:
