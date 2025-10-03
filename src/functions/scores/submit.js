@@ -7,9 +7,9 @@ const { v4: uuidv4 } = require('uuid')
 const client = new DynamoDBClient({})
 
 const submitResult = async (event) => {
-  const { score } = event.body
+  const { score, quizId } = event.body
   const userId = event.user.username // från decoded JWT
-  const quizId = event.pathParameters.quizId
+ 
 
   if(!score || !userId || !quizId) {
 	return {
