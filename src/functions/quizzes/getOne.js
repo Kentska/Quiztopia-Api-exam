@@ -24,3 +24,7 @@ const getOneQuiz = async (event) => {
   }
 }
 
+const middy = require('@middy/core')
+const httpErrorHandler = require('@middy/http-error-handler')
+
+module.exports.main = middy(getOneQuiz).use(httpErrorHandler())
