@@ -1,6 +1,6 @@
-import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb'
-import middy from '@middy/core'
-import jsonBodyParser from '@middy/http-json-body-parser'
+const { DynamoDBClient, QueryCommand } = require('@aws-sdk/client-dynamodb')
+const middy = require('@middy/core')
+const jsonBodyParser = require('@middy/http-json-body-parser')
 
 const client = new DynamoDBClient({})
 
@@ -46,4 +46,4 @@ const leaderboardHandler = async (event) => {
   }
 }
 
-export const main = middy(leaderboardHandler).use(jsonBodyParser())
+module.exports.main = middy(leaderboardHandler).use(jsonBodyParser())
