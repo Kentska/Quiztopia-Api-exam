@@ -11,49 +11,46 @@ provider:
     QUIZ_TABLE: QuiztopiaQuizzes
     RESULT_TABLE: QuiztopiaResults
 
-iam:
-    policyDocument:
-      Version: '2012-10-17'
-      Statement:
-        - Effect: Allow
-          Action:
-            - lambda:InvokeFunction
-            - lambda:CreateFunction
-            - lambda:UpdateFunctionCode
-            - lambda:UpdateFunctionConfiguration
-            - lambda:DeleteFunction
-          Resource: "arn:aws:lambda:eu-north-1:187296254059:function:quiztopia-*"
+iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:CreateFunction
+        - lambda:UpdateFunctionCode
+        - lambda:UpdateFunctionConfiguration
+        - lambda:DeleteFunction
+      Resource: "arn:aws:lambda:eu-north-1:187296254059:function:quiztopia-*"
 
-        - Effect: Allow
-          Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-          Resource: "*"
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
 
-        - Effect: Allow
-          Action:
-            - apigateway:GET
-            - apigateway:POST
-            - apigateway:PUT
-            - apigateway:DELETE
-            - apigateway:PATCH
-          Resource: "*"
+    - Effect: Allow
+      Action:
+        - apigateway:GET
+        - apigateway:POST
+        - apigateway:PUT
+        - apigateway:DELETE
+        - apigateway:PATCH
+      Resource: "*"
 
-        - Effect: Allow
-          Action:
-            - dynamodb:PutItem
-            - dynamodb:GetItem
-            - dynamodb:Query
-            - dynamodb:DeleteItem
-            - dynamodb:UpdateItem
-          Resource:
-            - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaUsers
-            - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaQuizzes
-            - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaResults
-            - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaUsers/index/*
-            - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaQuizzes/index/*
-            - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaResults/index/*
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Query
+        - dynamodb:DeleteItem
+        - dynamodb:UpdateItem
+      Resource:
+        - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaUsers
+        - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaQuizzes
+        - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaResults
+        - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaUsers/index/*
+        - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaQuizzes/index/*
+        - arn:aws:dynamodb:eu-north-1:187296254059:table/QuiztopiaResults/index/*
 
 plugins:
   - serverless-dotenv-plugin
