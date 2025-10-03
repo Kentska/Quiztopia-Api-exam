@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk')
-const { v4: uuidv4 } = require('uuid') // ✅ CommonJS-kompatibel
+const { v4: uuidv4 } = require('uuid')
 const middy = require('@middy/core')
 const httpErrorHandler = require('@middy/http-error-handler')
 const jsonBodyParser = require('@middy/http-json-body-parser')
@@ -11,13 +11,28 @@ const createQuiz = async (event) => {
   try {
     console.log('Incoming event:', JSON.stringify(event))
 
-    const { title } = event.body
+    const { title, questions } = event.body
     const username = event.user?.username
 
-    if (!title || !username) {
+    if (!title || !username || !Array.isArray(questions) || questions.length === 0) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'Missing title or user' }),
+        body: JSON.stringify({ message: 'Missing title, user, or questions' }),
+      }
+    }
+
+    // Validera varje fråga
+    for (const q of questions) {
+      if (
+        !q.question ||
+        !q.answer ||
+        typeof q.coordinates?.lat !== 'number' ||
+        typeof q.coordinates?.lng !== 'number'
+      ) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({ message: 'Each question must include question, answer, and coordinates' }),
+        }
       }
     }
 
@@ -28,7 +43,8 @@ const createQuiz = async (event) => {
         quizId,
         title,
         ownerId: username,
-        type: 'quiz', // ✅ krävs för GSI
+        questions, // ✅ hela frågelistan med koordinater
+        type: 'quiz',
       },
     }
 
@@ -51,4 +67,5 @@ module.exports.main = middy(createQuiz)
   .use(jsonBodyParser())
   .use(verifyToken())
   .use(httpErrorHandler())
+
 
