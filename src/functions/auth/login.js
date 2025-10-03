@@ -1,9 +1,9 @@
-const { DynamoDBClient, GetItemCommand } = require ('@aws-sdk/client-dynamodb')
-const middy = require ('@middy/core')
-const jsonBodyParser = require ('@middy/http-json-body-parser')
+const { DynamoDBClient, GetItemCommand } = require('@aws-sdk/client-dynamodb')
+const middy = require('@middy/core')
+const jsonBodyParser = require('@middy/http-json-body-parser')
 const httpErrorHandler = require('@middy/http-error-handler')
-const jwt = require ('jsonwebtoken')
-const bcrypt = require ('bcryptjs')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const client = new DynamoDBClient({})
 
@@ -20,27 +20,27 @@ const loginHandler = async (event) => {
   const command = new GetItemCommand({
     TableName: process.env.DYNAMODB_TABLE,
     Key: {
-      username: { S: username },
-    },
+      username: { S: username } // ✅ matchar tabellens partition key
+    }
   })
 
   try {
-    const result = await client.send(command)
+    const data = await client.send(command)
 
-    if (!result.Item) {
+    if (!data.Item) {
       return {
         statusCode: 401,
-        body: JSON.stringify({ message: 'Invalid credentials' }),
+        body: JSON.stringify({ message: 'Login failed', error: 'User not found' }),
       }
     }
 
-    const storedHash = result.Item.password.S
-    const match = await bcrypt.compare(password, storedHash)
+    const storedHash = data.Item.password.S
+    const isValid = await bcrypt.compare(password, storedHash)
 
-    if (!match) {
+    if (!isValid) {
       return {
         statusCode: 401,
-        body: JSON.stringify({ message: 'Invalid credentials' }),
+        body: JSON.stringify({ message: 'Login failed', error: 'Invalid password' }),
       }
     }
 
@@ -55,9 +55,10 @@ const loginHandler = async (event) => {
       body: JSON.stringify({ token }),
     }
   } catch (err) {
+    console.error('Login error:', err)
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Login failed', error: err.message }),
+      body: JSON.stringify({ message: 'Internal server error', error: err.message }),
     }
   }
 }
