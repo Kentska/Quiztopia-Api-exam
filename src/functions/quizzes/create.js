@@ -47,8 +47,8 @@ const createQuiz = async (event) => {
   }
 }
 
-module.exports.handler = middy(createQuiz)
+module.exports.main = middy(createQuiz)
   .use(jsonBodyParser())
-   .use(verifyToken())
+  .use(verifyToken())
   .use(httpErrorHandler())
 
