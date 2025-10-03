@@ -38,7 +38,7 @@ const createQuiz = async (event) => {
 
     const quizId = uuidv4()
     const params = {
-      TableName: process.env.QUIZZES_TABLE,
+      TableName: process.env.QUIZ_TABLE,
       Item: {
         quizId,
         title,
