@@ -1,38 +1,37 @@
-const { DynamoDBClient, QueryCommand } = require('@aws-sdk/client-dynamodb')
+const AWS = require('aws-sdk')
 const middy = require('@middy/core')
-const jsonBodyParser = require('@middy/http-json-body-parser')
+const httpErrorHandler = require('@middy/http-error-handler')
 
-const client = new DynamoDBClient({})
+const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
 const getAllQuizzes = async () => {
-  const command = new QueryCommand({
+  const params = {
     TableName: process.env.QUIZ_TABLE,
     IndexName: 'type-index',
-    KeyConditionExpression: 'type = :t',
-    ExpressionAttributeValues: {
-      ':t': { S: 'quiz' },
+    KeyConditionExpression: '#type = :type',
+    ExpressionAttributeNames: {
+      '#type': 'type'
     },
-  })
+    ExpressionAttributeValues: {
+      ':type': 'quiz'
+    }
+  }
 
   try {
-    const result = await client.send(command)
-
-    const quizzes = result.Items.map(item => ({
-      quizId: item.quizId.S,
-      title: item.title.S,
-      ownerId: item.ownerId.S,
-    }))
+    const result = await dynamoDb.query(params).promise()
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ quizzes }),
+      body: JSON.stringify(result.Items)
     }
   } catch (err) {
+    console.error('GetAllQuizzes error:', err)
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Failed to fetch quizzes', error: err.message }),
+      body: JSON.stringify({ message: 'Failed to fetch quizzes', error: err.message })
     }
   }
 }
 
-module.exports.main = middy(getAllQuizzes).use(jsonBodyParser())
+module.exports.main = middy(getAllQuizzes).use(httpErrorHandler())
+
