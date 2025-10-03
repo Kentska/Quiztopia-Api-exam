@@ -7,7 +7,8 @@ const client = new DynamoDBClient({})
 
 const deleteQuiz = async (event) => {
   const quizId = event.pathParameters.quizId
-  const userId = event.user.username
+  const userId = event.requestContext.authorizer.username
+ 
 
   if (!quizId) {
     return {
