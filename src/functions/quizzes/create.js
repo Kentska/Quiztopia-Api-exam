@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid') // ✅ CommonJS-kompatibel
 const middy = require('@middy/core')
 const httpErrorHandler = require('@middy/http-error-handler')
 const jsonBodyParser = require('@middy/http-json-body-parser')
+const verifyToken = require('../../middleware/verifyToken')
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
@@ -48,5 +49,6 @@ const createQuiz = async (event) => {
 
 module.exports.handler = middy(createQuiz)
   .use(jsonBodyParser())
+   .use(verifyToken())
   .use(httpErrorHandler())
 
