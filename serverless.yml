@@ -43,6 +43,7 @@ provider:
         - dynamodb:GetItem
         - dynamodb:Query
         - dynamodb:DeleteItem
+        - dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:eu-north-1:187296254059:table/Quiztopia*"
 
 plugins:
