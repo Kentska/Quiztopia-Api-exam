@@ -130,10 +130,10 @@ resources:
       Properties:
         TableName: QuiztopiaUsers
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: username
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: username
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 
