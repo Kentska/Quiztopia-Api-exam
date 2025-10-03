@@ -7,8 +7,13 @@ const client = new DynamoDBClient({})
 
 const deleteQuiz = async (event) => {
   const quizId = event.pathParameters.quizId
-  const userId = event.requestContext.authorizer.username
- 
+  const userId = event.requestContext?.authorizer?.username
+ if (!userId) {
+  return {
+    statusCode: 401,
+    body: JSON.stringify({ message: 'Missing user context' }),
+  }
+}
 
   if (!quizId) {
     return {
