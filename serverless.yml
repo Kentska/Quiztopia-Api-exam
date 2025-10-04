@@ -1,4 +1,5 @@
 service: quiztopia-api-exam
+useDotenv: true
 provider:
   name: aws
   runtime: nodejs18.x
