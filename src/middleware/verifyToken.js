@@ -4,10 +4,11 @@ const verifyToken = () => {
   return {
     before: async (request) => {
       const token = request.event.headers.Authorization || request.event.headers.authorization
-
+		console.log('Authorization header:',headers.Authorization)
       if (!token) {
         throw new Error('Missing Authorization header')
       }
+	 
 
       try {
         const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET)
