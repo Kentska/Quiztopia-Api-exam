@@ -3,17 +3,18 @@ const jwt = require('jsonwebtoken')
 const verifyToken = () => {
   return {
     before: async (request) => {
-      const token = request.event.headers.Authorization || request.event.headers.authorization
-		console.log('Authorization header:',headers.Authorization)
+      const headers = request.event.headers
+      const token = headers.Authorization || headers.authorization
+
+      console.log('Authorization header:', token)
+
       if (!token) {
         throw new Error('Missing Authorization header')
       }
-	 
 
       try {
         const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET)
 
-        // Sätt båda för kompatibilitet
         request.event.user = decoded
         request.event.requestContext = request.event.requestContext || {}
         request.event.requestContext.authorizer = {
@@ -27,3 +28,4 @@ const verifyToken = () => {
 }
 
 module.exports = verifyToken
+
