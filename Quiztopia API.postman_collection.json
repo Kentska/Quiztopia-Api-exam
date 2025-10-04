@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "608e79fa-c796-4c9a-a6c9-d9cfbe82392f",
+		"name": "Quiztopia API",
+		"description": "Samling av alla endpoints för Quiztopia-projektet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43506051",
+		"_collection_link": "https://kent-6058297.postman.co/workspace/Kent's-Workspace~6bfb6e92-d70f-4733-8354-6e1573ffb8d0/collection/43506051-608e79fa-c796-4c9a-a6c9-d9cfbe82392f?action=share&source=collection_link&creator=43506051"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"micke\",\n  \"password\": \"test123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"micke\",\n  \"password\": \"test123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Quizzes",
+			"item": [
+				{
+					"name": "Create Quiz",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Sverigequiz\",\n  \"questions\": [\n    {\n      \"question\": \"Vilken stad är Sveriges största?\",\n      \"answer\": \"Stockholm\",\n      \"latitude\": 59.3293,\n      \"longitude\": 18.0686\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/quizzes/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Quizzes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/quizzes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Quiz",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/quizzes/{{quizId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"{{quizId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Quiz",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/quizzes/{{quizId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"{{quizId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"question\": \"Vilken stad är Sveriges näst största?\",\n  \"answer\": \"Göteborg\",\n  \"latitude\": 57.7089,\n  \"longitude\": 11.9746\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/quizzes/{{quizId}}/questions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quizzes",
+								"{{quizId}}",
+								"questions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Scores",
+			"item": [
+				{
+					"name": "Submit Result",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quizId\": \"{{quizId}}\",\n  \"score\": 2,\n  \"username\": \"micke\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/scores/submit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"scores",
+								"submit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leaderboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/leaderboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaderboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
